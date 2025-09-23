@@ -7,7 +7,7 @@ import '../css/ProjectHomePage.css';
 // ✅ Dynamic backend URL
 const API_BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:8081' // Local dev
-  : 'http://backend:8081';  // Docker network
+  : 'http://backend:8087';  // Docker network
 
 export class ProjectHomePage extends Component {
   state = {
