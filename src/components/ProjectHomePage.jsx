@@ -53,7 +53,8 @@ export class ProjectHomePage extends Component {
     }
 
     try {
-      const response = await fetch("http://localhost:8081/api/users/signup", {
+     const response = await fetch("http://backend:8080/api/users/signup", {
+ {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullname, email, password, role }),
@@ -77,7 +78,8 @@ export class ProjectHomePage extends Component {
         alert(result.message || "Signup failed.");
       }
     } catch (error) {
-      alert("An error occurred while signing up: " + error.message);
+      const response = await fetch("http://backend:8080/api/users/signup", {
+
     }
   };
 
