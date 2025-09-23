@@ -4,11 +4,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import '../css/ProjectHomePage.css';
 
-// ✅ Dynamic backend URL
-const API_BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:8081' // Local dev
-  : 'http://backend:8087';  // Docker network
-
 export class ProjectHomePage extends Component {
   state = {
     showSignup: false,
@@ -21,10 +16,20 @@ export class ProjectHomePage extends Component {
     role: ""
   };
 
-  // Toggle signup modal
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.setState({ isLoggedIn: true });
+    }
+  }
+
+  BASE_URL = "http://localhost:8081/";
+
+  // ✅ Reset + prevent autofill
   toggleSignup = () => {
     this.setState((prevState) => ({
       showSignup: !prevState.showSignup,
+      showSignin: false,
       fullname: "",
       email: "",
       password: "",
@@ -33,10 +38,11 @@ export class ProjectHomePage extends Component {
     }));
   };
 
-  // Toggle signin modal
+  // ✅ Reset + prevent autofill
   toggleSignin = () => {
     this.setState((prevState) => ({
       showSignin: !prevState.showSignin,
+      showSignup: false,
       email: "",
       password: ""
     }));
@@ -58,7 +64,7 @@ export class ProjectHomePage extends Component {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/signup`, {
+      const response = await fetch(`${this.BASE_URL}api/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullname, email, password, role }),
@@ -68,6 +74,7 @@ export class ProjectHomePage extends Component {
 
       if (response.ok) {
         alert(result.message || "Signup successful!");
+
         this.setState({
           isLoggedIn: false,
           showSignup: false,
@@ -90,7 +97,7 @@ export class ProjectHomePage extends Component {
     const { email, password } = this.state;
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/signin`, {
+      const response = await fetch(`${this.BASE_URL}api/users/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -101,6 +108,7 @@ export class ProjectHomePage extends Component {
       if (response.ok) {
         localStorage.setItem("token", result.token);
         alert(`Welcome back, ${result.fullname || "user"}!`);
+
         this.setState({
           isLoggedIn: true,
           fullname: result.fullname || "",
@@ -135,7 +143,7 @@ export class ProjectHomePage extends Component {
       <div className="base">
         <header className="navbar">
           <div className="logo-container">
-            <img className="logo" src="../images/logo.jpg" alt="Art Gallery Logo" />
+            <img className="logo" src="/images/logo.jpg" alt="Art Gallery Logo" />
             <span className="brand">House of Serene Kunst</span>
           </div>
           <nav className="nav-links">
@@ -159,9 +167,9 @@ export class ProjectHomePage extends Component {
 
         <div className="hero">
           <Slider {...settings} className="carousel-container">
-            <div><img className="slide-image" src="../images/a1.webp" alt="Art 1" /></div>
-            <div><img className="slide-image" src="../images/a2.jpg" alt="Art 2" /></div>
-            <div><img className="slide-image" src="../images/a3.jpg" alt="Art 3" /></div>
+            <div><img className="slide-image" src="/images/a1.webp" alt="Art 1" /></div>
+            <div><img className="slide-image" src="/images/a2.jpg" alt="Art 2" /></div>
+            <div><img className="slide-image" src="/images/a3.jpg" alt="Art 3" /></div>
           </Slider>
           <div className="hero-text">
             <h1>Welcome to the Art Gallery</h1>
@@ -213,11 +221,11 @@ export class ProjectHomePage extends Component {
             <p>&copy; 2025 Art Gallery | All Rights Reserved</p>
             <p>Follow us on:
               <a href="#" className="fa fa-facebook">Facebook 
-              <img className='socialmediaIcon' src='./images/facebook.jpg' alt="Facebook" /></a> |
+              <img className='socialmediaIcon' src='/images/facebook.jpg' alt="Facebook" /></a> |
               <a href="#" className="fa fa-twitter">Instagram 
-              <img className='socialmediaIcon' src='./images/instagram.png' alt="Instagram" /></a> |
+              <img className='socialmediaIcon' src='/images/instagram.png' alt="Instagram" /></a> |
               <a href="#" className="fa fa-instagram">Twitter 
-              <img className='socialmediaIcon' src='./images/twitter.jpg' alt="Twitter" /></a>
+              <img className='socialmediaIcon' src='/images/twitter.jpg' alt="Twitter" /></a>
             </p>
           </div>
         </footer>
