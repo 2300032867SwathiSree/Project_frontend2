@@ -23,7 +23,7 @@ export class ProjectHomePage extends Component {
     }
   }
 
-  BASE_URL = "http://localhost:8081/";
+  BASE_URL = "http://oag-backend:8081/";
 
   // ✅ Reset + prevent autofill
   toggleSignup = () => {
