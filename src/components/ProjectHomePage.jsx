@@ -4,6 +4,11 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import '../css/ProjectHomePage.css';
 
+// ✅ Dynamic backend URL
+const API_BASE = window.location.hostname === 'localhost'
+  ? 'http://localhost:8081' // Local dev
+  : 'http://backend:8081';  // Docker network
+
 export class ProjectHomePage extends Component {
   state = {
     showSignup: false,
@@ -16,7 +21,7 @@ export class ProjectHomePage extends Component {
     role: ""
   };
 
-  // ✅ Reset + prevent autofill
+  // Toggle signup modal
   toggleSignup = () => {
     this.setState((prevState) => ({
       showSignup: !prevState.showSignup,
@@ -28,7 +33,7 @@ export class ProjectHomePage extends Component {
     }));
   };
 
-  // ✅ Reset + prevent autofill
+  // Toggle signin modal
   toggleSignin = () => {
     this.setState((prevState) => ({
       showSignin: !prevState.showSignin,
@@ -53,8 +58,7 @@ export class ProjectHomePage extends Component {
     }
 
     try {
-     const response = await fetch("http://backend:8080/api/users/signup", {
- {
+      const response = await fetch(`${API_BASE}/api/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullname, email, password, role }),
@@ -64,7 +68,6 @@ export class ProjectHomePage extends Component {
 
       if (response.ok) {
         alert(result.message || "Signup successful!");
-
         this.setState({
           isLoggedIn: false,
           showSignup: false,
@@ -78,8 +81,7 @@ export class ProjectHomePage extends Component {
         alert(result.message || "Signup failed.");
       }
     } catch (error) {
-      const response = await fetch("http://backend:8080/api/users/signup", {
-
+      alert("An error occurred while signing up: " + error.message);
     }
   };
 
@@ -88,7 +90,7 @@ export class ProjectHomePage extends Component {
     const { email, password } = this.state;
 
     try {
-      const response = await fetch("http://localhost:8081/api/users/signin", {
+      const response = await fetch(`${API_BASE}/api/users/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -99,7 +101,6 @@ export class ProjectHomePage extends Component {
       if (response.ok) {
         localStorage.setItem("token", result.token);
         alert(`Welcome back, ${result.fullname || "user"}!`);
-
         this.setState({
           isLoggedIn: true,
           fullname: result.fullname || "",
